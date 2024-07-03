@@ -61,7 +61,7 @@ Finally, by summing these expressions, we get a 64-bit product. We put the resul
 ## question2:
 Test your project with the LUMOS testing environment.
 
-![picture1](picture1.jpg)
+![picture1](picture1.PNG)
 
 ![picture2](picture2.jpg)
 
