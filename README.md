@@ -69,7 +69,7 @@ Test your project with the LUMOS testing environment.
 
 ![picture4](picture4.jpg)
 
-![picture5](picture5.jpg)
+![picture5](picture5.JPG)
 
 
 
