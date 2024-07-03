@@ -46,11 +46,11 @@ The final result of the program is stored in the `f0` register.
 
 ## explanation of codes (square root calculator and multiplier)
 
-- square root:
+- square root
 
-First, we take a copy of the first operand (Co_operand1) so that there is no problem in removing the last bit for the first operand, then we put the last two bits of the copy exactly in the pair variable, to put it next to the subtraction result of the previous step to form the radicand expression Gives. Then we shift the root twice and add it with 01 to get the expression that should be subtracted from the radicand (sbb), then we subtract the radicand from sbb and the result of the current step is obtained (sub-result).
-If the obtained result is positive (if (sub_result)), the root value (final expression) is shifted once and added by one, and if the subtraction result is negative, the expression is copied from the subtraction result of the previous step (co_sub_result). we put it in the subtraction result of this step to be used for the next step and we shift the root once so that a zero is added to its LSB.
-By doing these steps in the for loop, we reach the correct count number for the final value (root) and set root_ready to 1 to show that the root has been calculated.
+First, we take a copy of the first operand (`Co_operand1`) so that there is no problem in removing the last bit for the first operand, then we put the last two bits of the copy exactly in the pair variable, to put it next to the subtraction result of the previous step to form the radicand expression Gives. Then we shift the root twice and add it with 01 to get the expression that should be subtracted from the radicand (`sbb`), then we subtract the radicand from sbb and the result of the current step is obtained (`sub-result`).
+If the obtained result is positive (`if (sub_result)`), the root value (final expression) is shifted once and added by one, and if the subtraction result is negative, the expression is copied from the subtraction result of the previous step (`co_sub_result`). we put it in the subtraction result of this step to be used for the next step and we shift the root once so that a zero is added to its LSB.
+By doing these steps in the for loop, we reach the correct count number for the final value (`root`) and set root_ready to 1 to show that the root has been calculated.
 
 - multiplier
 
@@ -58,8 +58,8 @@ First, we spread two operands 1 and 2 into two parts, low bite and hiw bite, so 
 Now, each of these 4 parts must be shifted to the required value and added together to get the 64-bit result of the main product. For this, the product of each part of the module must be set with a 64-bit reg that is already set to zero. We add and shift the result instead of the product of the modules so that the data is not lost in case of shift.
 Finally, by summing these expressions, we get a 64-bit product. We put the result in the result. And we set product_ready to 1 to show that the multiplication is done.
 
-## question2:
-Test your project with the LUMOS testing environment.
+## Result
+
 
 ![picture1](picture1.JPG)
 
