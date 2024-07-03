@@ -37,12 +37,35 @@ module Fixed_Point_Unit
     // ------------------- //
     // Square Root Circuit //
     // ------------------- //
-    reg [WIDTH - 1 : 0] root;
+    reg [WIDTH - 1 : 0] root=32'b0;
     reg root_ready;
-
-        /*
-         *  Describe Your Square Root Calculator Circuit Here.
-         */
+    reg [WIDTH-1:0]co_oprand1=operand_1;
+    reg[1:0]pair;
+    reg[31:0]count=16;
+    reg[31:0]radicand;
+    reg[31:0]sbb=32'b0;
+    reg[31:0]sub_result=32'b0
+    reg[31:0]co_sub_result;
+    always @(*)
+    begin
+    for(i=0;i < count;i=i+1)
+    begin
+    pair=co_oprand1[31:30];
+    radicand=(sub_result << 2)+pair;
+    sbb=(root << 2)+1;
+    co_sub_result=sub_result;
+    sub_result=radicand-sbb;
+    if(sub_result)
+    root=(root << 1)+1
+    else
+    begin
+    sub_result=co_sub_result;
+    root=(root<<1)
+    end
+    co_oprand1=co_oprand1 <<2;
+    end
+    end
+    root_ready=1;
 
     // ------------------ //
     // Multiplier Circuit //
@@ -50,25 +73,66 @@ module Fixed_Point_Unit
     reg [64 - 1 : 0] product;
     reg product_ready;
 
-    reg     [15 : 0] multiplierCircuitInput1;
-    reg     [15 : 0] multiplierCircuitInput2;
-    wire    [31 : 0] multiplierCircuitResult;
+    reg     [15 : 0] multiplierCircuitInput1L = operand_1[15:0];
+    reg     [15 : 0] multiplierCircuitInput2L = operand_2[15:0];
+    reg     [15 : 0] multiplierCircuitInput1H = operand_1[31:16];
+    reg     [15 : 0] multiplierCircuitInput2H = operand_2[31:16];
 
-    Multiplier multiplier_circuit
+    reg   [31 : 0] multiplierCircuitResult1;
+    reg   [31 : 0] multiplierCircuitResult2;
+    reg   [31 : 0] multiplierCircuitResult3;
+    reg   [31 : 0] multiplierCircuitResult4;
+
+
+
+
+
+    reg     [63 : 0] partialProduct1 = 64'b0;
+    reg     [63 : 0] partialProduct2 = 64'b0;
+    reg     [63 : 0] partialProduct3 = 64'b0;
+    reg     [63 : 0] partialProduct4 = 64'b0;
+
+        Multiplier multiplier_circuit1
     (
-        .operand_1(multiplierCircuitInput1),
-        .operand_2(multiplierCircuitInput2),
-        .product(multiplierCircuitResult)
+        .operand_1(multiplierCircuitInput1L),
+        .operand_2(multiplierCircuitInput2L),
+        .product(multiplierCircuitResult1)
+    );
+           Multiplier multiplier_circuit2
+    (
+        .operand_1(multiplierCircuitInput2L),
+        .operand_2(multiplierCircuitInput1H),
+        .product(multiplierCircuitResult2)
+    );
+           Multiplier multiplier_circuit3
+    (
+        .operand_1(multiplierCircuitInput2H),
+        .operand_2(multiplierCircuitInput1L),
+        .product(multiplierCircuitResult3)
+    );
+           Multiplier multiplier_circuit4
+    (
+        .operand_1(multiplierCircuitInput1H),
+        .operand_2(multiplierCircuitInput2H),
+        .product(multiplierCircuitResult4)
+
     );
 
-    reg     [31 : 0] partialProduct1;
-    reg     [31 : 0] partialProduct2;
-    reg     [31 : 0] partialProduct3;
-    reg     [31 : 0] partialProduct4;
+always (*) begin
+partialProduct1 = multiplierCircuitResult1 + partialProduct1;
+partialProduct2 = multiplierCircuitResult2 + partialProduct2;
+partialProduct3 = multiplierCircuitResult3 + partialProduct3;
+partialProduct4 = multiplierCircuitResult4 + partialProduct4;
 
-        /*
-         *  Describe Your 32-bit Multiplier Circuit Here.
-         */
+partialProduct1 = multiplierCircuitResult1;
+partialProduct2 = multiplierCircuitResult2 << 16;
+partialProduct3 = multiplierCircuitResult3 << 16;
+partialProduct4 = multiplierCircuitResult4 << 32;
+
+product = partialProduct1 + partialProduct2 + partialProduct3 + partialProduct4;
+product_ready =1'b1;
+end
+
          
 endmodule
 
